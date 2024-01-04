@@ -1,0 +1,46 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const Report = () => {
+  const [sensorData, setSensorData] = useState([]);
+
+  useEffect(() => {
+    // Fetch sensor data from the backend
+    axios.get('http://localhost:1337/api/sensor')
+      .then(response => setSensorData(response.data))
+      .catch(error => console.error('Error fetching sensor data:', error));
+  }, []);
+
+  return (
+    <div className="hero overflow-x-auto pt-20">
+      <table className="table table-lg table-pin-rows table-pin-cols ">
+        <thead>
+          <tr>
+            <th>Sensor ID</th>               
+            <th>Timestamps</th>               
+            <th>Temperature</th>
+            <th>PH</th>
+            <th>Dissolved Oxygen</th>
+            <th>Reports</th>
+          </tr>
+        </thead> 
+        <tbody>
+          {sensorData.map(data => (
+              <tr key={data._id}>
+                <td>{data._id}</td>
+                <td>{data.timestamp}</td>
+                <td>{data.temperature}</td>
+                <td>{data.ph}</td>
+                <td>{data.dissolvedOxygen}</td>
+                <td>
+                <button className="btn btn-ghost btn-xs">Downloads</button>
+                </td>
+              </tr>
+          ))}
+        </tbody> 
+      </table>
+    </div>
+  );
+};
+
+export default Report;
