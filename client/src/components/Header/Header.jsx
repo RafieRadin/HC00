@@ -10,7 +10,7 @@ function Header() {
     }
 
   return (
-    <nav className="drawer-content flex flex-col">
+    <div className="drawer-content flex flex-col">
         {/* Navbar */}
         <div className="w-full navbar bg-base-300">
             <div className="flex-none lg:hidden">
@@ -58,9 +58,9 @@ function Header() {
                                 <label tabIndex={0} className="btn btn-ghost rounded-btn">Predictions</label>
                                 <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-300 rounded-box w-52 mt-4">
                                     <h2 className="menu-title">Sensor List</h2>
-                                    <li><Link to="/ph-sensors">pH Sensors</Link></li>
-                                    <li><Link to="/temp-sensors">Temp Sensors</Link></li>
-                                    <li><Link to="/do-sensors">DO Sensors</Link></li>
+                                    <li><Link to="/temp-sensor">Temp Sensors</Link></li>
+                                    <li><Link to="/ph-sensor">pH Sensors</Link></li>
+                                    <li><Link to="/do-sensor">DO Sensors</Link></li>
                                 </ul>
                             </div>
                             <Link to="/reports" className="btn btn-ghost rounded-btn">Reports</Link>
@@ -86,7 +86,7 @@ function Header() {
                                 Profile
                             </Link>
                         </li>
-                        <li><Link to="/settings">Settings</Link></li>
+                        <li><Link to="/modelsettings">Settings</Link></li>
                         <li onClick={handleClick}><Link to="/login">Logout</Link></li>
                     </ul>
                 </div>
@@ -99,7 +99,7 @@ function Header() {
             
             </div>
         </div>
-    </nav> 
+    </div>
     )
 }
 

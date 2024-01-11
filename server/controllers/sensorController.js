@@ -24,8 +24,8 @@ const uploadSensorData = async (req, res) => {
 
 const getAllSensorData = async (req, res) => {
   try {
-    // Fetch all sensor data from the database
-    const sensorData = await Sensor.find();
+    // Fetch all sensor data from the database and sort by timestamp in descending order
+    const sensorData = await Sensor.find().sort({ timestamp: -1 });
 
     res.json(sensorData);
   } catch (error) {

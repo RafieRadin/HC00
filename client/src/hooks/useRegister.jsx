@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useAuthContext } from './useAuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export const useRegister = () => {
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState('')
     const {dispatch} = useAuthContext()
-
+    const navigate = useNavigate()
     const register = async (email, password) => {
 
         setIsLoading(true)
@@ -30,7 +31,7 @@ export const useRegister = () => {
         }
         if (response.ok){
             localStorage.setItem('user', JSON.stringify(json))
-
+            navigate('/')
             dispatch({type: 'LOGIN',payload: json})
             setIsLoading(false)
         }

@@ -1,46 +1,100 @@
+import CheckCircleIcon from '@heroicons/react/24/outline/CheckCircleIcon';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Report = () => {
+function Dashboard() {
   const [sensorData, setSensorData] = useState([]);
 
   useEffect(() => {
-    // Fetch sensor data from the backend
+    // Fetch sensor data from the backend initially
+    fetchData();
+
+    // Set up an interval to periodically fetch sensor data
+    const intervalId = setInterval(fetchData, 300000); // 300,000 milliseconds = 5 minutes
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array to run only on mount and unmount
+
+  const fetchData = () => {
     axios.get('http://localhost:1337/api/sensor')
       .then(response => setSensorData(response.data))
       .catch(error => console.error('Error fetching sensor data:', error));
-  }, []);
+  };
+
+  const isSensorOnline = () => {
+    if (sensorData.length === 0 || !sensorData[0].timestamp) {
+      return false;
+    }
+
+    const currentTimestamp = new Date();
+    const lastUpdate = new Date(sensorData[0].timestamp);
+    const twoHoursAgo = new Date(currentTimestamp - 2 * 60 * 60 * 1000);
+
+    return lastUpdate > twoHoursAgo;
+  };
 
   return (
-    <div className="hero overflow-x-auto pt-20">
-      <table className="table table-lg table-pin-rows table-pin-cols ">
-        <thead>
-          <tr>
-            <th>Sensor ID</th>               
-            <th>Timestamps</th>               
-            <th>Temperature</th>
-            <th>PH</th>
-            <th>Dissolved Oxygen</th>
-            <th>Reports</th>
-          </tr>
-        </thead> 
-        <tbody>
-          {sensorData.map(data => (
-              <tr key={data._id}>
-                <td>{data._id}</td>
-                <td>{data.timestamp}</td>
-                <td>{data.temperature}</td>
-                <td>{data.ph}</td>
-                <td>{data.dissolvedOxygen}</td>
-                <td>
-                <button className="btn btn-ghost btn-xs">Downloads</button>
-                </td>
-              </tr>
-          ))}
-        </tbody> 
-      </table>
+    <div className="container ml-48 mr-48">
+      <div className="model mt-10">
+        <h1 className="text-4xl font-bold">Choose Model</h1>
+        <select className="select select-bordered w-full max-w-xs mt-3">
+          <option disabled selected>Select Model</option>
+          <option>GRU</option>
+          <option>LSTM</option>
+        </select>
+      </div>
+      <div className="divider"></div>
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 mt-2">
+        <div className="card w-96 bg-base-200 shadow-xl">
+          <div className="stat">
+            <div className="stat-figure invisible md:visible">
+              <CheckCircleIcon className='w-8 h-8'/>
+            </div>
+            <div className="stat-title">Sensor Status</div>
+            <div className="stat-value">
+              {isSensorOnline() ? "Online" : "Offline"}
+            </div>
+            <div className="stat-desc">
+              {sensorData.length > 0
+                ? `Last update: ${sensorData[0].timestamp}`
+                : "No data available"}
+            </div>
+          </div>
+        </div>
+        <div className="card w-96 bg-base-200 shadow-xl">
+          <div className="stat">
+            <div className="stat-figure invisible md:visible">
+              <div className="">°C</div>
+            </div>
+            <div className="stat-title">Temperature</div>
+            <div className="stat-value">{sensorData.length > 0 ? sensorData[0].temperature.toFixed(2) : "N/A"}</div>
+            <div className="stat-desc">Min | Max</div>
+          </div>
+        </div>
+        <div className="card w-96 bg-base-200 shadow-xl">
+          <div className="stat">
+            <div className="stat-figure invisible md:visible">
+              <div className="">pH</div>
+            </div>
+            <div className="stat-title">pH</div>
+            <div className="stat-value">{sensorData.length > 0 ? sensorData[0].ph.toFixed(2) : "N/A"}</div>
+            <div className="stat-desc">Min | Max</div>
+          </div>
+        </div>
+        <div className="card w-96 bg-base-200 shadow-xl">
+          <div className="stat">
+            <div className="stat-figure invisible md:visible">
+              <div className="">mg/L</div>
+            </div>
+            <div className="stat-title">Dissolved Oxygen</div>
+            <div className="stat-value">{sensorData.length > 0 ? sensorData[0].dissolvedOxygen.toFixed(2) : "N/A"}</div>
+            <div className="stat-desc">Min | Max</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default Report;
+export default Dashboard;
