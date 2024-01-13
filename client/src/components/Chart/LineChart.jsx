@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable react/prop-types */
+import { useState } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
@@ -6,6 +7,11 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 function LineChart({ temperatureData, pHData, dissolvedOxygenData, labels }) {
   const [selectedReading, setSelectedReading] = useState('temperature'); // Default to temperature
+
+  // Filter only the latest 24 data entries
+  const filteredTemperatureData = temperatureData.slice(-24);
+  const filteredpHData = pHData.slice(-24);
+  const filteredDissolvedOxygenData = dissolvedOxygenData.slice(-24);
 
   const options = {
     responsive: true,
@@ -36,15 +42,15 @@ function LineChart({ temperatureData, pHData, dissolvedOxygenData, labels }) {
 
   // Add the selected reading to the datasets
   if (selectedReading === 'temperature') {
-    datasets.push(getDataset('Temperature', temperatureData, 'rgb(255, 99, 132)', 'rgba(255, 99, 132, 0.5)'));
+    datasets.push(getDataset('Temperature', filteredTemperatureData, 'rgb(255, 99, 132)', 'rgba(255, 99, 132, 0.5)'));
   } else if (selectedReading === 'pH') {
-    datasets.push(getDataset('pH', pHData, 'rgb(75, 192, 192)', 'rgba(75, 192, 192, 0.5)'));
+    datasets.push(getDataset('pH', filteredpHData, 'rgb(75, 192, 192)', 'rgba(75, 192, 192, 0.5)'));
   } else if (selectedReading === 'dissolvedOxygen') {
-    datasets.push(getDataset('Dissolved Oxygen', dissolvedOxygenData, 'rgb(153, 102, 255)', 'rgba(153, 102, 255, 0.5)'));
+    datasets.push(getDataset('Dissolved Oxygen', filteredDissolvedOxygenData, 'rgb(153, 102, 255)', 'rgba(153, 102, 255, 0.5)'));
   }
 
   const data = {
-    labels,
+    labels: labels.slice(-24), // Use the last 24 labels
     datasets,
   };
 
@@ -52,7 +58,7 @@ function LineChart({ temperatureData, pHData, dissolvedOxygenData, labels }) {
     <div className="card bg-base-200 shadow-xl pb-6">
       <div className="card-body">
         <h2 className="card-title">Charts</h2>
-        <p>Select sensor readings below:</p>
+        <p>The graph show the last 24 reading from the sensor. Select sensor readings below:</p>
         <ul className="menu menu-horizontal bg-base-200">
           <li>
             <a

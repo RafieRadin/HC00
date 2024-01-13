@@ -25,15 +25,15 @@ function Dashboard() {
   };
 
   const isSensorOnline = () => {
-    if (sensorData.length === 0 || !sensorData[0].timestamp) {
+    if (sensorData.length === 0 || !sensorData[sensorData.length - 1].timestamp) {
       return false;
     }
 
     const currentTimestamp = new Date();
-    const lastUpdate = new Date(sensorData[0].timestamp);
+    const oldestUpdate = new Date(sensorData[sensorData.length - 1].timestamp);
     const setTime = new Date(currentTimestamp - 6 * 60 * 1000);
 
-    return lastUpdate > setTime;
+    return oldestUpdate > setTime;
   };
 
   const formatTimestamp = (timestamp) => {
@@ -62,7 +62,7 @@ function Dashboard() {
             </div>
             <div className="stat-desc">
               {sensorData.length > 0
-                ? `Last update: ${formatTimestamp(sensorData[0].timestamp)}`
+                ? `Last update: ${formatTimestamp(sensorData[sensorData.length - 1].timestamp)}`
                 : "No data available"}
             </div>
           </div>
