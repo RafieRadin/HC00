@@ -1,7 +1,7 @@
 const multer = require('multer');
 const path = require('path');
 
-const allowedFileTypes = ['image/jpeg', 'image/png']; // Define the allowed file types
+const allowedFileTypes = ['text/x-python']; // Updated to allow only Python files
 const maxSize = 5 * 1024 * 1024; // 5 MB limit
 
 const storage = multer.diskStorage({
@@ -19,7 +19,7 @@ const fileFilter = (req, file, cb) => {
   if (allowedFileTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Invalid file type'), false);
+    cb(new Error('Invalid file type, only Python files are allowed'), false);
   }
 };
 
